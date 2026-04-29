@@ -11,13 +11,13 @@ REPO="https://raw.githubusercontent.com/Wayy1702/Rejoin-Wayy/refs/heads/main"
 BIN="$PREFIX/bin/wayy"
 
 R='\033[0;31m'; G='\033[0;32m'; Y='\033[1;33m'
-C='\033[0;36m'; M='\033[0;35m'; D='\033[0;90d'; N='\033[0m'
+C='\033[0;36m'; M='\033[0;35m'; D='\033[0;90m'; N='\033[0m'
 
 clear
 echo ""
 echo -e "${M}  ╔══════════════════════════════════════╗${N}"
-echo -e "${M}  ║   W A Y Y  T O O L B O X  v5.0.0    ║${N}"
-echo -e "${M}  ║           by Wayy1702                ║${N}"
+echo -e "${M}  ║        W A Y Y  T O O L B O X        ║${N}"
+echo -e "${M}  ║                by Wayy               ║${N}"
 echo -e "${M}  ╚══════════════════════════════════════╝${N}"
 echo ""
 
@@ -26,6 +26,32 @@ if [[ -z "$PREFIX" || ! -d "/data/data/com.termux" ]]; then
     echo -e "${R}  [✗] Script ini hanya untuk Termux!${N}"
     exit 1
 fi
+
+# ── Fix SSL / curl rusak — WAJIB dilakukan pertama ───────────
+echo -e "${C}  [0/3] Fix SSL & curl...${N}"
+
+# Ganti mirror ke Cloudflare (paling stabil)
+if command -v termux-change-repo &>/dev/null; then
+    # Non-interaktif: tulis langsung ke sources.list
+    echo "deb https://packages-cf.termux.dev/apt/termux-main stable main" \
+        > "$PREFIX/etc/apt/sources.list"
+    echo -e "${G}  [✓] Mirror diganti ke Cloudflare${N}"
+fi
+
+# Update + full-upgrade untuk memperbaiki libcurl / libngtcp2
+apt-get update -y -q 2>/dev/null || true
+apt-get full-upgrade -y -q 2>/dev/null || true
+
+# Pastikan curl & libcurl versi terbaru
+apt-get install -y -q --fix-broken curl libcurl openssl 2>/dev/null || true
+
+# Verifikasi curl bisa jalan
+if ! curl --version &>/dev/null; then
+    echo -e "${R}  [✗] curl masih rusak setelah fix. Coba jalankan secara manual:${N}"
+    echo -e "${Y}      apt-get update && apt-get full-upgrade -y${N}"
+    exit 1
+fi
+echo -e "${G}  [✓] curl OK${N}"
 
 # ── Fungsi download dengan retry ─────────────────────────────
 _dl() {
@@ -58,13 +84,19 @@ fi
 
 # ── Install Dependencies ─────────────────────────────────────
 echo -e "${C}  [1/3] Install dependencies...${N}"
-pkg update -y -q 2>/dev/null
 pkg install -y -q curl wget termux-tools 2>/dev/null
 
 # ── Install Package Tambahan ──────────────────────────────────
 echo -e "${C}  [+]   Install package tambahan...${N}"
-# openssl-tool diperlukan untuk dekripsi AES di sisi klien
 pkg install -y -q sqlite binutils python openssl-tool xxd 2>/dev/null
+
+# Fallback: coba apt-get jika pkg gagal
+for _pkg in sqlite3 openssl xxd; do
+    if ! command -v "$_pkg" &>/dev/null; then
+        echo -e "${Y}  [!] $_pkg belum ada, coba install via apt-get...${N}"
+        apt-get install -y -q "$_pkg" 2>/dev/null || true
+    fi
+done
 
 _missing=0
 for _cmd in curl sqlite3 python3 openssl xxd; do
@@ -76,7 +108,7 @@ done
 if [[ $_missing -eq 0 ]]; then
     echo -e "${G}  [✓] Semua package OK${N}"
 else
-    echo -e "${Y}  [!] Beberapa package mungkin perlu install manual:${N}"
+    echo -e "${Y}  [!] Beberapa package perlu install manual:${N}"
     echo -e "${Y}      pkg install sqlite binutils python openssl-tool xxd -y${N}"
 fi
 
@@ -84,13 +116,11 @@ fi
 rm -f "$PREFIX/bin/toolbox" 2>/dev/null
 
 # ── Download wayy launcher dari public repo ──────────────────
-# mytoolbox.sh TIDAK di-download di sini — akan di-fetch dari
-# Cloudflare Worker (terenkripsi) setiap kali 'wayy' dijalankan.
 echo ""
 echo -e "${C}  [2/3] Download launcher 'wayy'...${N}"
 _dl "$REPO/wayy.sh" "$BIN" "wayy launcher" || exit 1
 
-# ── Selesai ──────────────────────────────────────────────────
+# ── Selesai ──────────────────────────────────────════════════
 echo ""
 echo -e "${M}  ══════════════════════════════════════${N}"
 echo -e "${G}  [✓] Instalasi selesai!${N}"
