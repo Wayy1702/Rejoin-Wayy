@@ -6,7 +6,7 @@
 # ╚══════════════════════════════════════════════════════════╝
 
 # ── Ganti dengan URL Cloudflare Worker kamu ──────────────────
-WORKER_URL="https://YOUR_WORKER.YOUR_SUBDOMAIN.workers.dev"
+WORKER_URL="https://wayykeys.cloudwayy69.workers.dev"
 
 SELF_BIN="$PREFIX/bin/wayy"
 SELF_URL="https://raw.githubusercontent.com/Wayy1702/mytoolbox/refs/heads/main/wayy.sh"
@@ -198,7 +198,7 @@ fi
 # !! PENTING: ENCRYPT_SECRET harus sama persis dengan env var di Worker
 # Hardcode di sini karena ini sisi klien (tersembunyi di binary / obfuscated)
 # Ganti nilai ini sesuai env var ENCRYPT_SECRET di Worker kamu
-_ENCRYPT_SECRET="GANTI_DENGAN_ENCRYPT_SECRET_KAMU_32CH"
+_ENCRYPT_SECRET="WayyEncrypt2025SecretKey12345678"
 
 # Rekonstruksi mask: HMAC(secret, hwid:key)
 echo -e "${C}  [~] Mendekripsi toolbox...${N}"
