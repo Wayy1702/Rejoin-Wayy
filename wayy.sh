@@ -9,7 +9,7 @@
 WORKER_URL="https://wayykeys.cloudwayy69.workers.dev"
 
 SELF_BIN="$PREFIX/bin/wayy"
-SELF_URL="https://raw.githubusercontent.com/Wayy1702/mytoolbox/refs/heads/main/wayy.sh"
+SELF_URL="https://raw.githubusercontent.com/Wayy1702/Rejoin-Wayy/refs/heads/main/wayy.sh"
 KEY_FILE="$HOME/.wayy_key"
 
 R='\033[0;31m'; G='\033[0;32m'; Y='\033[1;33m'
