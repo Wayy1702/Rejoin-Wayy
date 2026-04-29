@@ -7,7 +7,7 @@
 # CARA INSTALL:
 #   curl -sL https://raw.githubusercontent.com/Wayy1702/mytoolbox/main/install.sh | bash
 
-REPO="https://raw.githubusercontent.com/Wayy1702/mytoolbox/refs/heads/main"
+REPO="https://raw.githubusercontent.com/Wayy1702/Rejoin-Wayy/refs/heads/main"
 BIN="$PREFIX/bin/wayy"
 
 R='\033[0;31m'; G='\033[0;32m'; Y='\033[1;33m'
