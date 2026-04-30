@@ -5,7 +5,7 @@
 # ╚══════════════════════════════════════════════════════════╝
 #
 # CARA INSTALL:
-#   curl -sL https://raw.githubusercontent.com/Wayy1702/mytoolbox/main/install.sh | bash
+#   curl -sL https://raw.githubusercontent.com/Wayy1702/Rejoin-Wayy/main/install.sh | bash
 
 REPO="https://raw.githubusercontent.com/Wayy1702/Rejoin-Wayy/refs/heads/main"
 BIN="$PREFIX/bin/wayy"
