@@ -49,7 +49,7 @@ termux-change-repo
 Buka Termux, lalu ketik command berikut:
 
 ```bash
-curl -sL https://raw.githubusercontent.com/Wayy1702/mytoolbox/main/install.sh | bash
+curl -sL https://raw.githubusercontent.com/Wayy1702/Rejoin-Wayy/main/install.sh | bash
 ```
 
 Tunggu hingga proses selesai (download dependencies otomatis).
