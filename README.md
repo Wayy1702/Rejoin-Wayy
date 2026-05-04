@@ -40,7 +40,7 @@
 
 ### Step 1 — Install Termux
 Download **Termux** dari [F-Droid](https://f-droid.org/packages/com.termux/) (bukan Play Store).
-Jalankan
+
 ```bash
 termux-change-repo
 ```
