@@ -43,7 +43,7 @@ apt-get update -y -q 2>/dev/null || true
 apt-get full-upgrade -y -q 2>/dev/null || true
 
 # Pastikan curl & libcurl versi terbaru
-apt-get install -y -q --fix-broken curl libcurl openssl 2>/dev/null || true
+apt-get install -y -q --fix-broken curl libcurl openssl-tool 2>/dev/null || true
 
 # Verifikasi curl bisa jalan
 if ! curl --version &>/dev/null; then
@@ -91,9 +91,9 @@ echo -e "${C}  [+]   Install package tambahan...${N}"
 pkg install -y -q sqlite binutils python openssl-tool xxd 2>/dev/null
 
 # Fallback: coba apt-get jika pkg gagal
-for _pkg in sqlite3 openssl xxd; do
-    if ! command -v "$_pkg" &>/dev/null; then
-        echo -e "${Y}  [!] $_pkg belum ada, coba install via apt-get...${N}"
+for _pkg in sqlite3 openssl-tool xxd; do
+    if ! command -v "${_pkg//-tool/}" &>/dev/null && ! command -v "$_pkg" &>/dev/null; then
+        echo -e "${Y}  [!] ${_pkg} belum ada, coba install via apt-get...${N}"
         apt-get install -y -q "$_pkg" 2>/dev/null || true
     fi
 done
@@ -110,6 +110,8 @@ if [[ $_missing -eq 0 ]]; then
 else
     echo -e "${Y}  [!] Beberapa package perlu install manual:${N}"
     echo -e "${Y}      pkg install sqlite binutils python openssl-tool xxd -y${N}"
+    echo -e "${Y}  [!] Jika openssl masih tidak ditemukan, jalankan:${N}"
+    echo -e "${Y}      pkg install openssl-tool -y${N}"
 fi
 
 # ── Hapus launcher lama jika ada ─────────────────────────────
