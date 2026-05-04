@@ -129,16 +129,16 @@ if [[ -z "$LICENSE_KEY" ]]; then
 fi
 
 # ════════════════════════════════════════════════════════════
-#  3. Request rejoin terenkripsi dari Worker
+#  3. Request toolbox terenkripsi dari Worker
 # ════════════════════════════════════════════════════════════
 echo ""
-echo -e "${C}  [~] Memverifikasi key & mengunduh rejoin...${N}"
+echo -e "${C}  [~] Memverifikasi key & mengunduh toolbox...${N}"
 
 _resp=$(curl -fsSL --max-time 30 --connect-timeout 10 \
     -X POST \
     -H "Content-Type: application/json" \
     -d "{\"key\":\"${LICENSE_KEY}\",\"hwid\":\"${HWID}\"}" \
-    "${WORKER_URL}/get-rejoin" 2>/dev/null)
+    "${WORKER_URL}/get-toolbox" 2>/dev/null)
 
 if [[ -z "$_resp" ]]; then
     echo -e "${R}  [✗] Tidak bisa terhubung ke server. Cek koneksi!${N}"
@@ -201,7 +201,7 @@ fi
 _ENCRYPT_SECRET="WayyEncrypt2025SecretKey12345678"
 
 # Rekonstruksi mask: HMAC(secret, hwid:key)
-echo -e "${C}  [~] Mendekripsi rejoin...${N}"
+echo -e "${C}  [~] Mendekripsi toolbox...${N}"
 _mask=$(_hmac_hex "$_ENCRYPT_SECRET" "${HWID}:${LICENSE_KEY}")
 
 # Un-XOR masked key untuk dapatkan AES session key asli
@@ -211,14 +211,14 @@ _session_key=$(_xor_hex "$_masked_key" "$_mask")
 _decrypted=$(_aes_decrypt "$_session_key" "$_iv" "$_payload")
 
 if [[ -z "$_decrypted" ]]; then
-    echo -e "${R}  [✗] Gagal mendekripsi rejoin! Key atau payload rusak.${N}"
+    echo -e "${R}  [✗] Gagal mendekripsi toolbox! Key atau payload rusak.${N}"
     exit 1
 fi
 
-echo -e "${G}  [✓] Rejoin siap!${N}"
+echo -e "${G}  [✓] Toolbox siap!${N}"
 
 # ════════════════════════════════════════════════════════════
-#  5. Simpan key & exec rejoin langsung dari memori
+#  5. Simpan key & exec toolbox langsung dari memori
 # ════════════════════════════════════════════════════════════
 
 # Simpan key ke file untuk sesi berikutnya
@@ -226,5 +226,5 @@ echo "$LICENSE_KEY" > "$KEY_FILE"
 chmod 600 "$KEY_FILE"
 
 echo ""
-# Jalankan rejoin langsung dari variabel (tidak ditulis ke disk)
+# Jalankan toolbox langsung dari variabel (tidak ditulis ke disk)
 exec bash <(echo "$_decrypted") "$@"
